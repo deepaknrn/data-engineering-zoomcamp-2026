@@ -1,6 +1,7 @@
 #Dockerfile for pipeline.py
 
 FROM python:3.13.11-slim
+#The first line is FROM instruction which specifies the base image for the docker container
 #The base image is the official python slim image
 #The docker container test with the label of pandas will be created from this base image
 #docker build -t test:pandas .
@@ -17,6 +18,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 WORKDIR /code
 COPY pyproject.toml .python-version uv.lock ./  
 #Copy the UV related dependency files
+#Here uv.lock is the lock file created by uv to lock the dependencies, created manually and not when calling uv init --python 3.13
 
 #RUN pip install pandas pyarrow 
 #Install the dependencies required for executing pipeline.py file
