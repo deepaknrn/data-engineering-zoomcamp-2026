@@ -31,7 +31,7 @@ WORKDIR /code
 COPY pipeline.py  .
 
 ENTRYPOINT ["python", "pipeline.py"]
-#ENTRYPOINT ["uv","run","python", "pipeline.py"]
+#ENTRYPOINT ["uv","run","python", "pipeline.py"] if ENV PATH="/code/.venv/bin:$PATH" is not set above line
 #Set the entrypoint to execute the pipeline.py file when the container starts
 
 #If you don't like writing uv run in the ENTRYPOINT CREATe the following entry at the top of this script
