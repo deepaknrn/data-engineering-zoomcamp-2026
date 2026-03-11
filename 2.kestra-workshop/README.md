@@ -3,7 +3,7 @@
 This repository is based on the **Data Engineering Zoomcamp 2026 - Kestra Workshop**.  
 You can find the YouTube playlist [here](https://www.youtube.com/watch?v=wgPxC4UjoLM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=10).  
 Learn more about Kestra [here](https://kestra.io/#).
-
+Kestra Configure Credentials [here] https://kestra.io/docs/how-to-guides/google-credentials 
 ---
 
 ## Pre-requisites: Python
@@ -16,6 +16,7 @@ Run the following command to initialize the project using `uv`:
 ```bash
 uv init --python 3.13
 ```
+
 
 ### 3. Create the Virtual Environment
 Check the Python version to confirm the virtual environment is created:
@@ -39,6 +40,10 @@ uv add sqlalchemy psycopg2-binary
 uv add tqdm
 uv add python-dotenv
 ```
+
+or or Specify the project directory :
+uv add pandas --project "c:\Learning\Deepak\DataTalks_Club\1.Data Engineering ZoomCamp 2026\data-engineering-zoomcamp-2026\data-engineering-zoomcamp-2026"
+uv add pyarrow --project "c:\Learning\Deepak\DataTalks_Club\1.Data Engineering ZoomCamp 2026\data-engineering-zoomcamp-2026\data-engineering-zoomcamp-2026"
 
 ### 6. View Installed Packages
 List the installed packages:

@@ -1,0 +1,11 @@
+deepaknrn@cloudshell:~ (bigquerydemo-dezoomcamp)$ for year in 2019 2020; do
+  for month in {01..12}; do
+    FILENAME="green_tripdata_${year}-${month}.parquet"
+    URL="https://d37ci6vzurychx.cloudfront.net/trip-data/${FILENAME}"
+    
+    echo "Processing ${FILENAME}..."
+    
+    # Streams from the web directly to your GCS bucket
+    wget -qO- ${URL} | gcloud storage cp - gs://taxinyride_green/${FILENAME}
+  done
+done

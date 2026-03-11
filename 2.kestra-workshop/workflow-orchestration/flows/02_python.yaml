@@ -3,6 +3,15 @@ namespace: zoomcamp
 
 description: This flow will install the pip package in a Docker container, and use kestra's Python library to generate outputs (number of downloads of the Kestra Docker image) and metrics (duration of the script).
 
+#Call a python script within a docker container
+#Step1: Define a task that uses the Python Script plugin to execute a Python script within a Docker container. The task will specify the Docker image to use, any dependencies required, and the script itself.
+#Step2: The Python script will define a function to query the Docker Hub API for the number of downloads of a specific Docker image (in this case, "kestra/kestra"). It will use the `requests` library to make an HTTP GET request to the Docker Hub API, parse the JSON response, and extract the 'pull_count' which represents the number of downloads. The result will be printed and returned.
+#Step3: The script will also include a section to set up outputs for Kestra, allowing the number of downloads to be used in other tasks or as the final output of the workflow. Additionally, it will include a main block to execute the function when the script is run directly.
+
+#plugin used : python.Script plugin, which allows you to run Python code within a Docker container. This plugin is useful for executing Python scripts that require specific dependencies or environments, as it provides an isolated environment for the script to run in.
+#plugin used : docker.Docker runner, which allows you to specify a Docker image to use for running the Python script. This is useful for ensuring that the script runs in a consistent environment with all necessary dependencies installed.
+#dependencies specified in the task include the `requests` library for making HTTP requests and the `kestra` library for interacting with Kestra's features, such as setting outputs.
+
 tasks:
   - id: collect_stats
     type: io.kestra.plugin.scripts.python.Script

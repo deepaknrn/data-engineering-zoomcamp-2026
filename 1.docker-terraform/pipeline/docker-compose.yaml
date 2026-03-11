@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: ny_taxi
     volumes:
-      - ny_taxi_postgres_data:/var/lib/postgresql
+      - ny_taxi_postgres_data_upd:/var/lib/postgresql
     ports:
       - "5432:5432"
     networks:
@@ -29,7 +29,7 @@ services:
       - pg-database
 
 volumes:
-  ny_taxi_postgres_data:
+  ny_taxi_postgres_data_upd:
   pgadmin_data:
 
 networks:

@@ -261,6 +261,8 @@ pluginDefaults:
       username: root
       password: root
 
+#Scheduling the workflow will help to setup backfills for historical data. In this case, we have set up two schedules, one for green taxi and one for yellow taxi. The green taxi schedule is set to run at 9 AM on the first day of every month, and the yellow taxi schedule is set to run at 10 AM on the first day of every month. This way, we can automate the ingestion of new monthly data for both taxi types without having to manually trigger the workflow each time. You can adjust the cron expressions as needed to fit your specific scheduling requirements. 
+
 triggers:
   - id: green_schedule
     type: io.kestra.plugin.core.trigger.Schedule
