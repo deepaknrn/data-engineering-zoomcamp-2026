@@ -3,6 +3,8 @@ namespace: zoomcamp
 description: |
   The CSV Data used in the course: https://github.com/DataTalksClub/nyc-tlc-data/releases
 
+
+#Here the inputs are of type SELECT , where you can select a particular value from a list of values in a drop down
 inputs:
   - id: taxi
     type: SELECT
@@ -22,12 +24,14 @@ inputs:
     values: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
     defaults: "01"
 
+#Setup the user defined variables that can be used across the workflow, in this case we are defining the file name, staging table name, final table name and the data that will be used in the workflow. These variables use the inputs provided to dynamically generate values that can be used in the tasks.
 variables:
   file: "{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv"
   staging_table: "public.{{inputs.taxi}}_tripdata_staging"
   table: "public.{{inputs.taxi}}_tripdata"
   data: "{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ inputs.year ~ '-' ~ inputs.month ~ '.csv']}}"
 
+#Label plugin is used to set labels for the execution, which can be useful for tracking and organizing executions based on certain attributes. In this case, we are setting labels for the file name and taxi type, which can help in filtering and identifying executions related to specific files or taxi types in the Kestra UI.
 tasks:
   - id: set_label
     type: io.kestra.plugin.core.execution.Labels
@@ -35,6 +39,8 @@ tasks:
       file: "{{render(vars.file)}}"
       taxi: "{{inputs.taxi}}"
 
+#Shell.Commands PLugin is used to execute shell commands within a task. In this case, it is used to download the specified CSV file from the GitHub repository, decompress it, and save it to a local file. The output of this task is the CSV file that will be used in subsequent tasks for processing and loading into PostgreSQL.
+#Previously we had used the http.Download plugin to download the file, but since we are downloading a gzipped CSV file and we need to decompress it before loading into PostgreSQL, using Shell.Commands allows us to handle both downloading and decompressing in one step.
   - id: extract
     type: io.kestra.plugin.scripts.shell.Commands
     outputFiles:
@@ -44,6 +50,9 @@ tasks:
     commands:
       - wget -qO- https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{{inputs.taxi}}/{{render(vars.file)}}.gz | gunzip > {{render(vars.file)}}
 
+#If condition check plugin
+#If input.taxi =="yellow" then it will execute the tasks under "then" block, which are responsible for creating the necessary tables and loading data for yellow taxi. If input.taxi =="green" then it will execute the tasks under "then" block, which are responsible for creating the necessary tables and loading data for green taxi. This allows us to have a single workflow that can handle both yellow and green taxi data based on the user's selection.
+#postgresql.Queries plugin is used to execute SQL queries against a PostgreSQL database. In this workflow, it is used to create tables, truncate staging tables, add unique IDs and filenames, and merge data into the final tables for both yellow and green taxi data. The plugin uses the connection details specified in the pluginDefaults section to connect to the PostgreSQL database and execute the queries.
   - id: if_yellow_taxi
     type: io.kestra.plugin.core.flow.If
     condition: "{{inputs.taxi == 'yellow'}}"
@@ -105,6 +114,7 @@ tasks:
         sql: |
           TRUNCATE TABLE {{render(vars.staging_table)}};
 
+#postgresql.CopyIn plugin is used to efficiently load large amounts of data from a CSV file into a PostgreSQL table. In this workflow, it is used to load the extracted and transformed taxi data from the CSV file into a staging table in PostgreSQL. The plugin takes care of parsing the CSV file and inserting the data into the specified table, which can be much faster than inserting rows one by one using SQL INSERT statements. The configuration specifies the format of the data (CSV), the source of the data (the rendered variable that points to the CSV file), the target table in PostgreSQL, and the columns to be loaded from the CSV file.
       - id: yellow_copy_in_to_staging_table
         type: io.kestra.plugin.jdbc.postgresql.CopyIn
         format: CSV
@@ -113,6 +123,7 @@ tasks:
         header: true
         columns: [VendorID,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,RatecodeID,store_and_fwd_flag,PULocationID,DOLocationID,payment_type,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge]
 
+#Setting unique_row_id and filename in the staging table. The unique_row_id is generated using an MD5 hash of a combination of several columns that are expected to uniquely identify a trip record. This helps in identifying duplicate records when merging data into the final table. The filename column is also set to keep track of which file the data came from, which can be useful for auditing and debugging purposes.
       - id: yellow_add_unique_id_and_filename
         type: io.kestra.plugin.jdbc.postgresql.Queries
         sql: |
@@ -129,6 +140,7 @@ tasks:
             ),
             filename = '{{render(vars.file)}}';
 
+#Do SCD Type 2 merge of the data from staging table to the final table. The MERGE statement compares the unique_row_id in the staging table with the unique_row_id in the final table. If there is no match (i.e., it's a new record), it inserts the record into the final table. This ensures that only new records are added to the final table, and duplicates are avoided based on the unique_row_id.
       - id: yellow_merge_data
         type: io.kestra.plugin.jdbc.postgresql.Queries
         sql: |
@@ -258,10 +270,12 @@ tasks:
               S.improvement_surcharge, S.total_amount, S.payment_type, S.trip_type, S.congestion_surcharge
             );
   
+#storage.PurgeCurrentExecutionFiles plugin is used to delete the files generated during the execution of the workflow. In this case, it will remove the extracted CSV files after they have been loaded into PostgreSQL. This helps in managing storage and ensuring that temporary files do not accumulate over time. If you want to keep the output files for exploration or debugging purposes, you can disable this task.
   - id: purge_files
     type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
     description: This will remove output files. If you'd like to explore Kestra outputs, disable it.
 
+#Plugin defaults allow you to define default configurations for plugins used in the workflow. In this case, we are setting default connection details for the PostgreSQL database, such as the JDBC URL, username, and password. This way, we don't have to specify these details in every task that uses the PostgreSQL plugin, and it helps in centralizing the configuration for easier maintenance and updates. The PostgreSQL plugins used in the workflow will automatically use these default connection settings unless overridden in the individual
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:

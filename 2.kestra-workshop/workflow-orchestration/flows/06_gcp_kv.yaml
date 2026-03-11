@@ -1,12 +1,14 @@
 id: 06_gcp_kv
 namespace: zoomcamp
 
+#Setup Key value pairs in Kestra KV Store. These can be used to store configuration values, secrets, or any other information that needs to be accessed across multiple tasks or workflows. In this case, we are setting up key-value pairs for GCP project ID, location, bucket name, and dataset name. These values can then be referenced in other tasks using the render function to access the KV store values. This approach helps in centralizing configuration and makes it easier to manage and update values without having to change the workflow code.
+
 tasks:
   - id: gcp_project_id
     type: io.kestra.plugin.core.kv.Set
     key: GCP_PROJECT_ID
     kvType: STRING
-    value: kestra-sandbox # TODO replace with your project id
+    value: kestra-sandbox-486813 # TODO replace with your project id
 
   - id: gcp_location
     type: io.kestra.plugin.core.kv.Set

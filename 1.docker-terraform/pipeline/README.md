@@ -94,6 +94,17 @@ uv add --dev pgcli
 uv run --active pgcli -h localhost -p 5432 -u root -d ny_taxi
 or 
 uv run pgcli -h localhost -p 5432  -u root -d ny_taxi
+or
+docker exec -it pipeline-pg-database-1 psql -U root -d ny_taxi
+
+Type "help" for help.
+
+ny_taxi=# \dt
+        List of tables
+ Schema | Name | Type  | Owner
+--------+------+-------+-------
+ public | test | table | root
+(1 row)
 
 It connects to localhost:5432 which inturn forwards to postgresql docker container running in port 5432
 You will now be able to access the postgresql18 ny_taxi database via the CLI
@@ -106,6 +117,15 @@ Current set of tables within the postgres:18 container
 | public | yellow_taxi_data | table | root  |
 | public | zones            | table | root  |
 +--------+------------------+-------+-------+
+
+Issue#: 
+If a local postgres installation is present in the windows machine then postgres in the local machine and docker postgres container will listen to the same port 5432 , You will get password is incorrect FATAL error (authentication denied ) To resolve it , stop the postgres running in the windows machine with the following steps .
+
+1.netstat -ano | findstr 5432
+2.tasklist | findstr "48408 9620" -use the PID's
+3.Get-Service | Where-Object { $_.DisplayName -like "*postgres*" }
+4.net stop postgresql-x64-17
+5.uv run pgcli -h localhost -p 5432 -u root -d ny_taxi
 
 To Containerize the Python code [ingest_data.py] and execute it within a docker container
 4.Build the docker image after the Dockerfile has been created
@@ -176,6 +196,9 @@ docker run -it --rm \
     --pg-port 5432 \
     --pg-db ny_taxi \
     --target-table yellow_taxi_data
+
+--Network name changed to pipeline_pg-network (After docker network ls)
+docker run -it --network=pipeline_pg-network taxi_ingest:v001 --year 2021 --month 1 --pg-user root --pg-password root    --pg-host pg-database --pg-port 5432 --pg-db ny_taxi  --target-table yellow_taxi_data
 
 7.To view front end UI(pgadmin) to validate the data
 docker run -it --rm \

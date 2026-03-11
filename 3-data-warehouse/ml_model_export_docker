@@ -1,0 +1,61 @@
+Reference File : 
+https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/03-data-warehouse/extract_model.md
+
+Google Cloud Tutorial : 
+https://cloud.google.com/bigquery-ml/docs/export-model-tutorial
+
+gcloud auth login
+
+gcloud config set project bigquerydemo-dezoomcamp
+
+bq --project_id bigquerydemo-dezoomcamp extract -m nytaxi.tip_model gs://bigquerydemo-dezoomcamp-ml-exports/tip_model
+
+mkdir /tmp/model
+
+gsutil cp -r gs://bigquerydemo-dezoomcamp-ml-exports/tip_model /tmp/model
+
+mkdir -p serving_dir/tip_model/1 
+
+cp -r /tmp/model/tip_model/* serving_dir/tip_model/
+
+mv serving_dir 3-data-warehouse 
+
+mv 3-data-warehouse/serving_dir/tip_model/assets 3-data-warehouse/serving_dir/tip_model/1
+
+Move all the files and folders from 3-data-warehouse/serving_dir/tip_model to 3-data-warehouse/serving_dir/tip_model/1
+
+docker pull tensorflow/serving
+
+docker run -p 8501:8501 --mount type=bind,source=$(pwd)/3-data-warehouse/serving_dir/tip_model,target=/models/tip_model -e MODEL_NAME=tip_model -t tensorflow/serving
+
+
+Using PostMan
+
+GET REQUEST :
+http://localhost:8501/v1/models/tip_model
+
+Response :
+{
+    "model_version_status": [
+        {
+            "version": "1",
+            "state": "AVAILABLE",
+            "status": {
+                "error_code": "OK",
+                "error_message": ""
+            }
+        }
+    ]
+}
+
+POST REQUEST : 
+http://localhost:8501/v1/models/tip_model:predict
+
+Body : {"instances": [{"passenger_count":1, "trip_distance":12.2, "PULocationID":"193", "DOLocationID":"264", "payment_type":"2","fare_amount":20.4,"tolls_amount":0.0}]}
+
+Response : 
+{
+    "predictions": [
+        0.61227380390749886
+    ]
+}

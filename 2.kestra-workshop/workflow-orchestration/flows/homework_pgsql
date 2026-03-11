@@ -1,0 +1,16 @@
+SELECT * FROM public.yellow_tripdata;
+
+SELECT filename,count(*) from public.yellow_tripdata
+group by filename;
+
+SELECT SUM(count)
+FROM (SELECT filename,count(*) as count from public.yellow_tripdata group by filename) 
+WHERE filename LIKE 'yellow_tripdata_2020-%';
+
+SELECT filename,count(*) from public.green_tripdata
+group by filename;
+
+SELECT SUM(count)
+FROM (SELECT filename,count(*) as count from public.green_tripdata group by filename) 
+WHERE filename LIKE 'green_tripdata_2020-%';
+

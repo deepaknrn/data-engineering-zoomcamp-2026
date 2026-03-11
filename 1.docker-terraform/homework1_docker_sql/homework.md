@@ -8,6 +8,10 @@ This repository should contain the code for solving the homework.
 
 When your solution has SQL or shell commands and not code (e.g. python files) file format, include them directly in the README file of your repository.
 
+1.Once docker-compose up has been executed using the docker-compose.yaml for the homework folder , 
+2.Ensure the files taxi_zone_lookup.csv and green_tripdata_2025-11.parquet are placed in the homework folder
+3.uv run python multiple_ingest_data.py  --pg-user=postgres  --pg-password=postgres  --pg-host=localhost --pg-port=5433 --pg-db=ny_taxi  --target-table1=taxi_zone_data --target-table2=green_trip_data --chunksize=100000
+
 ## Question 1. Understanding Docker images
 
 Run docker with the `python:3.13` image. Use an entrypoint `bash` to interact with the container.

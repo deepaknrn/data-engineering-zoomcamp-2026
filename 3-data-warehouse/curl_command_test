@@ -1,0 +1,16 @@
+/* To check if the parquet files exist in the global buckets
+deepaknrn@cloudshell:~ (bigquerydemo-dezoomcamp)$ curl -I https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2019-01.parquet
+HTTP/2 200 
+content-type: application/x-www-form-urlencoded; charset=utf-8
+content-length: 110439634
+date: Wed, 11 Feb 2026 03:56:49 GMT
+last-modified: Thu, 30 Jun 2022 03:16:20 GMT
+etag: "564a9f76dd7c9554718f6ea0c2c372fe-7"
+accept-ranges: bytes
+server: AmazonS3
+x-cache: Hit from cloudfront
+via: 1.1 112765d4ef8d4a2b4474fac716037a2e.cloudfront.net (CloudFront)
+x-amz-cf-pop: SIN2-P11
+x-amz-cf-id: RALeq544FZmbd1V3DxQ7H-hkRcGDWAWO3DIz9TCUKZ7EHkOn0VOclA==
+age: 27411
+*/
