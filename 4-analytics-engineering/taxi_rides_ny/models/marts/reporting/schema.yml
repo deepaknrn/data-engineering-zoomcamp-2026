@@ -1,0 +1,16 @@
+version : 2
+
+models:
+  - name: dim_vendors
+    description: "This source contains the dimension table for the vendors in the taxi rides in New York City."
+    columns:
+      - name: vendor_id
+        description: "The unique identifier for the vendor. This field is used to join with the fct_trips fact table to get the vendor information for each trip."
+        tests:
+          - not_null
+          - unique
+      - name: vendor_name
+        description: "The name of the vendor. This field provides the name of the vendor associated with each trip, which can be used for reporting and analysis purposes." 
+        tests :
+          - not_null
+          - unique

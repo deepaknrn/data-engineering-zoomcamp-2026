@@ -1,0 +1,7 @@
+data/
+logs/
+taxi_rides_ny/key/
+taxi_rides_ny/taxi_rides_ny/
+taxi_rides_ny/taxi_rides_ny.duckdb# Data directory
+data/
+taxi_rides_ny_dbtcloud/

@@ -1,0 +1,5 @@
+-- This file contains singular tests for the fct_trips model. These tests are designed to check for specific conditions that should not occur in the data. If any of these tests fail, it indicates that there is an issue with the data that needs to be addressed.
+-- If any of these tests fail, it indicates that there is an issue with the data that needs to be addressed. These tests are important for ensuring the quality and integrity of the data in the fct_trips model.
+-- If the query returns any rows, it means that there are records in the fct_trips model that have a fare_amount less than 0, which is not valid. This could indicate an issue with the data processing or an error in the source data that needs to be investigated and resolved.
+select * from {{ref('fct_trips')}}
+where fare_amount < 0

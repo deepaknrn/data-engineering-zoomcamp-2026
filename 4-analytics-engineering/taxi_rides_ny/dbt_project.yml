@@ -6,6 +6,8 @@ name: 'taxi_rides_ny'
 version: '1.0.0'
 
 # This setting configures which "profile" dbt uses for this project.
+#Also setups the connection configuration for the project (Postgres/DuckDb/Google Big Query)
+#For the same project by switching the profile we can connect to different data warehouses
 profile: 'taxi_rides_ny'
 
 # These configurations specify where dbt should look for different types of files.

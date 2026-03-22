@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: bigquery_raw_data
+    description: "This source contains the raw data for the taxi rides in New York City."
+    database: bigquerydemo-dezoomcamp
+    schema: nytaxi
+    tables:
+      - name: external_yellow_tripdata_2019_2020_bigquery
+        description: "This table contains the yellow taxi trip data for New York City for the years 2019 and 2020. bigquerydemo-dezoomcamp.nytaxi.external_yellow_tripdata_2019_2020_bigquery"
+      - name: external_green_tripdata_2019_2020_bigquery
+        description: "This table contains the green taxi trip data for New York City for the years 2019 and 2020. bigquerydemo-dezoomcamp.nytaxi.external_green_tripdata_2019_2020_bigquery"

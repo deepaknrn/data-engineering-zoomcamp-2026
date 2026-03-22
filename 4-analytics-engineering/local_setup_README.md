@@ -37,8 +37,8 @@ source .venv/bin/activate
 Install the required packages using `uv`:
 ```bash
 uv add duckdb
-uv add dbt-duckdb
-uv add dbt-bigquery
+uv add dbt-duckdb # This installs The core dbt framework, The DuckDB adapter for dbt
+uv add dbt-bigquery #This installs the big query adapter for dbt
 ```
 
 ### 6. View Installed Packages
@@ -81,11 +81,18 @@ Create the dbt project
 
 (.venv) @deepaknrn ➜ /workspaces/docker-workshop/04-analytics-engineering (main) $ dbt init taxi_rides_ny
 
+Which database would you like to use ?
+[1] Snowflake
+[2] duckdb -> Choose this 
+[3] bigquery
+
 To configure dbt to use DuckDB, you need to set up your dbt profile in the file ~/.dbt/profiles.yml. Here’s a minimal example for a DuckDB profile:
 ### This has been created via copilot agent
 Created in the Path : C:\Users\chand\.dbt
 
-taxi_rides_ny:
+Profiles file is used to provide information regarding connection/environment that dbt should use.
+
+taxi_rides_ny:                                                   
   target: dev
   outputs:
     # DuckDB Development profile
@@ -121,11 +128,91 @@ taxi_rides_ny:
 Step 4: Download and Ingest Data https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/setup/local_setup.md 
 # - Create the file ingest.py
 
-### 10. Test the dbt Connection
-dbt debug
-Verify dbt can connect to your DuckDB database:
+Run the ingest.py
+Move the duckdb database created taxi_rides_ny.duckdb to the folder /taxi_rides_ny
+
 
 ### 11. Install dbt Power User Extension (VS Code Users)
 The following extensions are installed in Vs Code
 dbt Power User (Altimate Inc)
 dbt (Official VS Code Extension)
+
+Install DuckDB CLI from https://duckdb.org/docs/installation/cli/
+Add the installation directory to your PATH environment variable
+
+### 12. Open an instance of duck db
+duckdb -ui
+
+┌──────────────────────────────────────┐
+│                result                │
+│               varchar                │
+├──────────────────────────────────────┤
+│ UI started at http://localhost:4213/ │
+└──────────────────────────────────────┘
+DuckDB v1.5.0 (Variegata)
+Enter ".help" for usage hints.
+
+http://localhost:4213/ 
+
+Query using : select * from taxi_rides_ny.prod.green_tripdata;
+Query using : select * from taxi_rides_ny.prod.yellow_tripdata;
+
+
+### 13. Navigate to the folder 
+
+Verify dbt can connect to your DuckDB database:
+cd 
+C:\Learning\Deepak\DataTalks_Club\1.Data Engineering ZoomCamp 2026\data-engineering-zoomcamp-2026\data-engineering-zoomcamp-2026\
+4-analytics-engineering\taxi_rides_ny
+
+### 14. Test the dbt Connection
+dbt debug
+What ^ it does is that it tries to connect to the duckdb database using the profiles.yml file , check if the database is correct and does all the checks and once all the checks are passed it will display a message
+
+[Note Error : 
+File is already open in
+C:\Users\chand.duckdb\duckdb.exe (PID 20384) This error means taxi_rides_ny.duckdb is already open in DuckDB CLI (duckdb.exe), so dbt cannot access it at the same time.
+
+To fix:
+
+Close DuckDB CLI (duckdb.exe) if it’s running and using taxi_rides_ny.duckdb.
+Then rerun dbt debug.]
+
+13:14:14  Running with dbt=1.11.7
+13:14:14  dbt version: 1.11.7
+13:14:14  python version: 3.13.9
+13:14:14  python path: C:\Learning\Deepak\DataTalks_Club\1.Data Engineering ZoomCamp 2026\data-engineering-zoomcamp-2026\data-engineering-zoomcamp-2026\.venv\Scripts\python.exe
+13:14:14  os info: Windows-11-10.0.26100-SP0
+13:14:14  Using profiles dir at C:\Users\chand\.dbt
+13:14:14  Using profiles.yml file at C:\Users\chand\.dbt\profiles.yml
+13:14:14  Using dbt_project.yml file at C:\Learning\Deepak\DataTalks_Club\1.Data Engineering ZoomCamp 2026\data-engineering-zoomcamp-2026\data-engineering-zoomcamp-2026\4-analytics-engineering\taxi_rides_ny\dbt_project.yml
+13:14:14  adapter type: duckdb
+13:14:14  adapter version: 1.10.1
+13:14:15  Configuration:
+13:14:15    profiles.yml file [OK found and valid]
+13:14:15    dbt_project.yml file [OK found and valid]
+13:14:15  Required dependencies:
+13:14:15   - git [OK found]
+
+13:14:15  Connection:
+13:14:15    database: taxi_rides_ny
+13:14:15    schema: dev
+13:14:15    path: taxi_rides_ny.duckdb
+13:14:15    config_options: None
+13:14:15    extensions: ['parquet']
+13:14:15    settings: {'memory_limit': '2GB', 'preserve_insertion_order': False}    
+13:14:15    external_root: .
+13:14:15    use_credential_provider: None
+13:14:15    attach: None
+13:14:15    filesystems: None
+13:14:15    remote: None
+13:14:15    plugins: None
+13:14:15    disable_transactions: False
+13:14:15  Registered adapter: duckdb=1.10.1
+13:14:15    Connection test: [OK connection ok]
+
+13:14:15  All checks passed!
+
+### 15. Install the dbt Power User Extension (VS Code Users)
+1.dbt
+2.Power User for dbt(Altimate Inc)
